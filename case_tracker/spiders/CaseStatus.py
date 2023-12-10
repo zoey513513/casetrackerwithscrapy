@@ -2,27 +2,28 @@ import scrapy
 
 class Casestatus(scrapy.Spider):
     name = "CaseStatus"
-    allowed_domains = ["www.casestatusext.com/"]
+    allowed_domains = ["casestatusext.com"]
     start_urls = ["https://www.casestatusext.com/cases/IOE0918743038/"]
 
     def parse(self, response):
         cases = response.xpath('//td/a')
-        casenames = []
-        links = []
+
         for case in cases:
             casename = case.xpath(".//text()").get()
-            casenames.append(casename)
             relativelink = case.xpath(".//@href").get()
+            yield response.follow(url=relativelink, callback=self.parse_case, meta={'casename': casename})
 
-            # # method 1:
-            # absolutelink = response.urljoin(relativelink)
-            # # method 2:
-            # absolutelink = f'https://www.casestatusext.com/{relativelink}'
-            # method 3:
-            absolutelink = response.follow(relativelink)
-
-            links.append(absolutelink)
+    def parse_case(self, response):
+        casename = response.request.meta['casename']
+        timelines = response.xpath('//ul[contains(@class,"ant-timeline")]/li')
         yield {
-            'casenames': casenames,
-            'links': links,
+            'casename': casename,
         }
+        for timeline in timelines:
+            time = timeline.xpath('.//div[@class="ant-timeline-item-label"]/text()').get()
+            status = timeline.xpath('.//div[@class="ant-timeline-item-content"]/text()').get()
+            yield {
+                'time': time, 'status': status,
+            }
+
+
