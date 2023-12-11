@@ -11,6 +11,7 @@ BOT_NAME = "case_tracker"
 
 SPIDER_MODULES = ["case_tracker.spiders"]
 NEWSPIDER_MODULE = "case_tracker.spiders"
+RETRY_TIMES = 3  # Adjust the number of retries as needed
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
