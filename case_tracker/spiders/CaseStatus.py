@@ -74,3 +74,6 @@ class CaseStatus(scrapy.Spider):
 
     def click_element(self, xpath):
         self.driver.find_element(By.XPATH, xpath).click()
+
+
+# run silently: scrapy crawl CaseStatus --nolog
