@@ -8,7 +8,7 @@
 from itemadapter import ItemAdapter
 import pymongo
 import os
-
+import sqlite3
 class MongodbPipeline:
     collections_name = 'transcript'
     def open_spider(self, spider):
@@ -20,3 +20,31 @@ class MongodbPipeline:
 
         self.db[self.collections_name].insert(item)
         return item
+class SQLitePipeline:
+    def open_spider(self, spider):
+        self.connection = sqlite3.connect('transcript.db')
+        self.c = self.connection.cursor()
+        try:
+            self.c.execute('''
+                CREATE TABLE transcripts(
+                title TEXT,
+                plot TEXT
+            )
+            ''')
+            self.connection.commit()
+        except sqlite3.OperationalError:
+            pass
+
+    def close_spider(self, spider):
+        self.connection.close()
+    def process_item(self, item, spider):
+
+        self.c.execute('''
+        INSERT INTO transcripts (title,plot) VALUES(?,?)
+        ''', (
+            item.get('title'),
+            item.get('plot'),
+        ))
+        self.connection.commit()
+        return item
+

@@ -65,6 +65,7 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "case_tracker.pipelines.MongodbPipeline": 300,
+   "case_tracker.pipelines.SQLitePipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
