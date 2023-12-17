@@ -48,3 +48,4 @@ class SQLitePipeline:
         self.connection.commit()
         return item
 
+# sqlite viewer: https://inloop.github.io/sqlite-viewer/
